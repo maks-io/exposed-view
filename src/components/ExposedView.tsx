@@ -1,18 +1,34 @@
 import { View } from "react-native";
 import { ExposedViewProps } from "$/types/ExposedViewProps";
 import { checkStyle } from "$/helpers/checkStyle";
+import { useContext } from "react";
+import ExposedViewContext from "$/context/ExposedViewContext";
 
-const useColoredView =
-  process.env.EXPOSE_VIEW === "true" ||
-  process.env.EXPO_PUBLIC_EXPOSE_VIEW === "true";
-
-const ColoredView = ({
+export const ExposedView = ({
   children,
   color,
+  expose = false,
+  showWarnings = false,
   style = {},
   ...rest
 }: ExposedViewProps) => {
-  checkStyle(style);
+  const { expose: exposeGlobal, showWarnings: showWarningsGlobal } =
+    useContext(ExposedViewContext);
+
+  const showWarningsEffective = !showWarnings ? false : showWarningsGlobal;
+  const exposeEffective = exposeGlobal || expose;
+
+  if (!exposeEffective) {
+    return (
+      <View style={{ ...style }} {...rest}>
+        {children}
+      </View>
+    );
+  }
+
+  if (showWarningsEffective) {
+    checkStyle(style);
+  }
 
   return (
     <View
@@ -47,9 +63,3 @@ const ColoredView = ({
     </View>
   );
 };
-
-const UncoloredView = ({ children, ...rest }: ExposedViewProps) => {
-  return <View {...rest}>{children}</View>;
-};
-
-export const ExposedView = useColoredView ? ColoredView : UncoloredView;
