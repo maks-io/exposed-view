@@ -1,8 +1,8 @@
-# exposed-view
+# exposed-view 👁 👁️
 
 [![Version](https://img.shields.io/npm/v/exposed-view)](https://www.npmjs.com/package/exposed-view)
 
-Simple react-native View wrapper, to expose its position / size via colors. Toggle the coloring via env variable.
+Simple react-native View wrapper, to expose its position / size via colors.
 
 ## Demo
 
