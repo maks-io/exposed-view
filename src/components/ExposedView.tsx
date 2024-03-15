@@ -1,22 +1,63 @@
-import { View } from "react-native";
+import { LayoutRectangle, useWindowDimensions, View } from "react-native";
 import { ExposedViewProps } from "$/types/ExposedViewProps";
 import { checkStyle } from "$/helpers/checkStyle";
-import { useContext } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import ExposedViewContext from "$/context/ExposedViewContext";
+import { Dimensions } from "$/components/Dimensions";
+import { Position } from "$/components/Position";
+import { defaultBackgroundOpacity } from "$/config/defaultBackgroundOpacity";
+import { defaultBorderWidth } from "$/config/defaultBorderWidth";
 
-export const ExposedView = ({
+export const EnhancedView = ({
   children,
   color,
   expose = false,
   showWarnings = false,
+  showDimensions,
+  showPosition,
+  widthPosition = "bottom",
+  heightPosition = "right",
+  showUnit,
   style = {},
   ...rest
 }: ExposedViewProps) => {
-  const { expose: exposeGlobal, showWarnings: showWarningsGlobal } =
-    useContext(ExposedViewContext);
+  const windowDimensions = useWindowDimensions();
+  const {
+    expose: exposeGlobal,
+    showWarnings: showWarningsGlobal,
+    showDimensions: showDimensionsGlobal,
+    showPosition: showPositionGlobal,
+    backgroundOpacity: backgroundOpacityGlobal,
+    borderWidth: borderWidthGlobal,
+  } = useContext(ExposedViewContext);
 
-  const showWarningsEffective = !showWarnings ? false : showWarningsGlobal;
+  const viewRef = useRef<View>(null);
+  const [layoutRectangle, setLayoutRectangle] = useState<LayoutRectangle>();
+  const [measureInWindow, setMeasureInWindow] = useState<LayoutRectangle>();
+
   const exposeEffective = exposeGlobal || expose;
+  const showDimensionsEffective =
+    showDimensions === undefined ? showDimensionsGlobal : showDimensions;
+  const showPositionEffective =
+    showPosition === undefined ? showPositionGlobal : showPosition;
+
+  useEffect(() => {
+    if (exposeEffective && showPositionEffective && viewRef?.current) {
+      viewRef.current.measureInWindow((x, y, width, height) => {
+        setMeasureInWindow({ x, y, width, height });
+      });
+    }
+  }, [
+    exposeEffective,
+    showPositionEffective,
+    windowDimensions?.height,
+    windowDimensions?.width,
+    viewRef?.current,
+    layoutRectangle,
+  ]);
+
+  const showWarningsEffective =
+    showWarnings !== undefined ? showWarnings : showWarningsGlobal;
 
   if (!exposeEffective) {
     return (
@@ -39,14 +80,32 @@ export const ExposedView = ({
       }}
     >
       <View
+        ref={viewRef}
+        onLayout={
+          showDimensionsEffective || showPositionEffective
+            ? ({ nativeEvent: { layout } }) => {
+                setLayoutRectangle(layout);
+              }
+            : undefined
+        }
         style={{
           position: "absolute",
-          borderColor: color,
-          borderStyle: color ? "solid" : undefined,
-          borderWidth: color ? 4 : undefined,
-          backgroundColor: color,
-          height: "100%",
-          width: "100%",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          borderColor: style?.borderColor ? undefined : color,
+          borderStyle: style?.borderStyle
+            ? undefined
+            : color
+              ? "solid"
+              : undefined,
+          borderWidth: style?.borderWidth
+            ? undefined
+            : color
+              ? borderWidthGlobal ?? defaultBorderWidth
+              : undefined,
+          backgroundColor: style?.backgroundColor ? undefined : color,
         }}
       >
         <View
@@ -54,12 +113,39 @@ export const ExposedView = ({
             position: "absolute",
             width: "100%",
             height: "100%",
-            opacity: 0.55,
+            opacity: backgroundOpacityGlobal ?? defaultBackgroundOpacity,
             backgroundColor: "white",
           }}
         />
       </View>
       {children}
+      <View
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+        }}
+      >
+        {showDimensionsEffective && layoutRectangle && (
+          <Dimensions
+            layoutRectangle={layoutRectangle}
+            showUnit={showUnit}
+            widthPosition={widthPosition}
+            heightPosition={heightPosition}
+          />
+        )}
+        {showPositionEffective && measureInWindow && (
+          <Position layoutRectangle={measureInWindow} showUnit={showUnit} />
+        )}
+      </View>
     </View>
   );
 };
+
+const activateLibrary =
+  process.env.EXPOSE_VIEW === "true" ||
+  process.env.EXPO_PUBLIC_EXPOSE_VIEW === "true";
+
+export const ExposedView = activateLibrary ? EnhancedView : View;

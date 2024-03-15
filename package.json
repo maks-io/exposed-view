@@ -51,5 +51,8 @@
     "tsc": "^2.0.4",
     "tsc-alias": "^1.8.8",
     "typescript": "^5.4.2"
+  },
+  "dependencies": {
+    "react-native-svg": "^15.1.0"
   }
 }

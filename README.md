@@ -44,3 +44,14 @@ To make the coloring visible, make sure that at least one of the env variables `
 ## Contribution
 
 I mainly built this for myself, therefore the documentation is a bit minimalistic. Feel free to contribute via Pull Requests.
+
+## Future ideas / improvements
+- Add intelligent avoidance of labels (positions + dimensions) overflowing the screen edges?
+- Improve positioning of labels when values are longer vs. shorter?
+- Add style differences between x, y, width and height labels?
+- Add fancy style for labels (like arrows etc.)?
+- Make labels only appear on hover for web?
+- Make labels have half opacity, and only show fully on hover for web?
+- Add possibility to show defined width/height vs. effective px width/height?
+- Make position values be relative to screen?
+- Add warning icon if style prop overwriting occurs?
