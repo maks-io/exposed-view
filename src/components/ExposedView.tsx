@@ -1,4 +1,5 @@
 import { LayoutRectangle, useWindowDimensions, View } from "react-native";
+import { whoAmINow } from "who-am-i-now";
 import { ExposedViewProps } from "$/types/ExposedViewProps";
 import { checkStyle } from "$/helpers/checkStyle";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -146,6 +147,7 @@ export const EnhancedView = ({
 
 const activateLibrary =
   process.env.EXPOSE_VIEW === "true" ||
-  process.env.EXPO_PUBLIC_EXPOSE_VIEW === "true";
+  process.env.EXPO_PUBLIC_EXPOSE_VIEW === "true" ||
+  whoAmINow().isExpoSnack;
 
 export const ExposedView = activateLibrary ? EnhancedView : View;

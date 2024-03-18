@@ -55,7 +55,10 @@ After that, you can use the `ExposedView` component across your app, like so:
 
 ## Global Toggle / "Kill-switch"
 
-To make **any exposing possible**, make sure that at least one of the env variables `EXPOSE_VIEW` or `EXPO_PUBLIC_EXPOSE_VIEW` is set to `"true"` - otherwise it will render a normal react-native `View` instead, which doesn't include the coloring of course. The decision for this had performance reason for production environments - we recommend you to not set these env variables on production environments for simple deactivation of any visual highlighting of `ExposedView`s. Instead, your app will fall back to using standard `View` components instead.
+To make **any exposing possible**, make sure that at least one of the env variables `EXPOSE_VIEW` or `EXPO_PUBLIC_EXPOSE_VIEW` is set to `"true"` - otherwise it will render a normal react-native `View` instead, which doesn't include the coloring of course.
+The decision for this had performance reason for production environments - we recommend you to not set these env variables on production environments for simple deactivation of any visual highlighting of `ExposedView`s.
+Instead, your app will fall back to using standard `View` components instead.
+If you use this library inside an Expo Snack, this global toggle is automatically set to `true`, otherwise it could not be used there, since reading environment variables is not possible in Expo Snacks.
 
 ## Props for `ExposedViewContextProvider`
 

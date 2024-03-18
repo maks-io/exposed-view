@@ -1,6 +1,6 @@
 {
   "name": "exposed-view",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Simple react-native View wrapper, to expose its position / size via colors.",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -53,6 +53,7 @@
     "typescript": "^5.4.2"
   },
   "dependencies": {
-    "react-native-svg": "^15.1.0"
+    "react-native-svg": "^15.1.0",
+    "who-am-i-now": "^2.0.1"
   }
 }
