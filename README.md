@@ -9,6 +9,9 @@ Simple react-native View wrapper, to expose its position / size via colors.
 <a href="https://youtube.com/shorts/xg_A93rB474?feature=share"><img src="documentation/exposed-view-mobile-gif-01.gif" height="480px" alt="without-color"></a>
 <a href="https://youtube.com/shorts/F-05UaQo_gg?feature=share"><img src="documentation/exposed-view-web-gif-01.gif" height="480px" alt="with-color"></a>
 
+## Live Demo
+Check this [expo snack](https://snack.expo.dev/@maks-io/exposed-view-demo) out.
+
 ## Installation
 
 If you use expo, use:
