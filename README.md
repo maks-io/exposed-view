@@ -10,6 +10,7 @@ Simple react-native View wrapper, to expose its position / size via colors.
 <a href="https://youtube.com/shorts/F-05UaQo_gg?feature=share"><img src="documentation/exposed-view-web-gif-01.gif" height="480px" alt="with-color"></a>
 
 ## Live Demo
+
 Check this [expo snack](https://snack.expo.dev/@maks-io/exposed-view-demo) out.
 
 ## Installation
@@ -69,7 +70,8 @@ The props you set here define the behaviour of all `ExposedView` components (see
 
 | prop                | required | default     | type                | description                                                                                                                                                                                                                                                                                       |
 | ------------------- | -------- | ----------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `expose`            | yes      | `true`      | boolean             | Turn on any exposing functionality via this prop. The kill-switch (mentioned above) must be considered too - if you forget to set the corresponding env variable(s) you will not see any functionality.                                                                                           |
+| `exposeGlobal`      | yes      | -           | boolean             | Turn on or off any exposing functionality via this prop for every `ExposedView` component, that does NOT explicitely set its `expose` prop. Note: The kill-switch (mentioned above) must be considered too!                                                                                       |
+| `exposeOverride`    | no       | `undefined` | boolean             | This allows you to override ALL the `ExposedView` components in your app, as well as the `exposeGlobal` property above. It is recommended only if you want to temporarily turn on or off all exposing, without using the kill-switch mentioned above.                                             |
 | `showWarnings`      | no       | `false`     | boolean             | Decides whether or not to show console.warns in case the highlighting css properties are overwritten by the View style itself, for instance, if a backgroundColor is set on an `ExposedView` it would warn, that in case of `expose === true` the highlighting backgroundColor would not be seen. |
 | `showDimensions`    | no       | `true`      | boolean             | Decides whether or not to show dimensions, meaning width and height labels.                                                                                                                                                                                                                       |
 | `showPosition`      | no       | `true`      | boolean             | Decides whether or not to show position, meaning x and y labels.                                                                                                                                                                                                                                  |
@@ -93,11 +95,22 @@ The props you set here define the behaviour of all `ExposedView` components (see
 
 An `<ExposedView />` accepts all props that the standard `<View />` accepts.
 
+It also accepts the optional `expose` prop, which has a higher priority than the global `exposeGlobal` setting on the context provider.
+
 Besides that, the following one prop is **mandatory**:
 `color` (of type `CSSProperties["color"]`), which decides the "exposing" color for that `ExposedView`
 
 Additionally, the following props are **optional**, and can be used, to override the corresponding setting from the `ExposedViewContextProvider`, for individual `ExposedViews`:
-`expose`, `showWarnings`, `showDimensions`, `showPosition`, `widthPosition`, `heightPosition`, `showUnit`. The definition and behaviour of all these props can be seen in the table above.
+`showWarnings`, `showDimensions`, `showPosition`, `widthPosition`, `heightPosition`, `showUnit`. The definition and behaviour of all these props can be seen in the table above.
+
+## Summary over switch hierarchy
+
+Since there are multiple switch mechanisms that decide, whether a View is exposed or not, let's summarize it again:
+
+1. The `exposeGlobal` prop (required) on the context provider. It will switch on or off exposing for any `ExposedView` **without an explicitly set `expose` prop**.
+2. The `expose` prop (optional) on the `ExposedView` component.
+3. The `exposeOverride` prop (optional) on the context provider. If this is set (to either `true` or `false`) it will render the `exposeGlobal` props (1) as well as any set `expose` prop (2) useless. Only use it for temporary overriding.
+4. The `EXPOSE_VIEW` and `EXPO_PUBLIC_EXPOSE_VIEW` environment variables. If at least one of them is set to `"true"`, it will activate the entire library. If none of them is set to true, it will deactivate it, meaning any prop above (1-3) will be rendered useless.
 
 ## Future ideas / improvements
 

@@ -24,7 +24,8 @@ export const EnhancedView = ({
 }: ExposedViewProps) => {
   const windowDimensions = useWindowDimensions();
   const {
-    expose: exposeGlobal,
+    exposeGlobal,
+    exposeOverride,
     showWarnings: showWarningsGlobal,
     showDimensions: showDimensionsGlobal,
     showPosition: showPositionGlobal,
@@ -36,7 +37,12 @@ export const EnhancedView = ({
   const [layoutRectangle, setLayoutRectangle] = useState<LayoutRectangle>();
   const [measureInWindow, setMeasureInWindow] = useState<LayoutRectangle>();
 
-  const exposeEffective = exposeGlobal || expose;
+  const exposeEffective =
+    exposeOverride !== undefined
+      ? exposeOverride
+      : expose === undefined
+        ? exposeGlobal
+        : expose;
   const showDimensionsEffective =
     showDimensions === undefined ? showDimensionsGlobal : showDimensions;
   const showPositionEffective =

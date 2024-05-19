@@ -3,7 +3,8 @@ import { ColorValue } from "react-native";
 import { CommonProps } from "$/types/CommonProps";
 
 type ExposedViewContextProps = React.PropsWithChildren & {
-  expose: boolean;
+  exposeGlobal: boolean;
+  exposeOverride?: boolean;
   fontSize?: number;
   borderWidth?: number;
   backgroundOpacity?: number;
@@ -24,7 +25,8 @@ export const ExposedViewContext = createContext<ExposedViewContextProps>(
 
 export const ExposedViewContextProvider = ({
   children,
-  expose,
+  exposeGlobal,
+  exposeOverride,
   fontSize,
   borderWidth,
   backgroundOpacity,
@@ -46,7 +48,8 @@ export const ExposedViewContextProvider = ({
 }: ExposedViewContextProps) => {
   const value = useMemo(
     () => ({
-      expose,
+      exposeGlobal,
+      exposeOverride,
       fontSize,
       borderWidth,
       backgroundOpacity,
@@ -67,7 +70,8 @@ export const ExposedViewContextProvider = ({
       widthPosition,
     }),
     [
-      expose,
+      exposeGlobal,
+      exposeOverride,
       fontSize,
       borderWidth,
       backgroundOpacity,
