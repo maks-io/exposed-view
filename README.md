@@ -42,7 +42,7 @@ import { ExposedViewContextProvider } from "exposed-view";
 
 export default function App() {
   return (
-    <ExposedViewContextProvider expose={true}>
+    <ExposedViewContextProvider exposeGlobal={true}>
       <MyApp />
     </ExposedViewContextProvider>
   );
