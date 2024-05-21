@@ -12,7 +12,7 @@ import { defaultBorderWidth } from "$/config/defaultBorderWidth";
 export const EnhancedView = ({
   children,
   color,
-  expose = false,
+  expose,
   showWarnings = false,
   showDimensions,
   showPosition,
@@ -40,9 +40,9 @@ export const EnhancedView = ({
   const exposeEffective =
     exposeOverride !== undefined
       ? exposeOverride
-      : expose === undefined
-        ? exposeGlobal
-        : expose;
+      : expose !== undefined
+        ? expose
+        : exposeGlobal;
   const showDimensionsEffective =
     showDimensions === undefined ? showDimensionsGlobal : showDimensions;
   const showPositionEffective =

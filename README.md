@@ -110,7 +110,7 @@ Since there are multiple switch mechanisms that decide, whether a View is expose
 1. The `exposeGlobal` prop (required) on the context provider. It will switch on or off exposing for any `ExposedView` **without an explicitly set `expose` prop**.
 2. The `expose` prop (optional) on the `ExposedView` component.
 3. The `exposeOverride` prop (optional) on the context provider. If this is set (to either `true` or `false`) it will render the `exposeGlobal` props (1) as well as any set `expose` prop (2) useless. Only use it for temporary overriding.
-4. The `EXPOSE_VIEW` and `EXPO_PUBLIC_EXPOSE_VIEW` environment variables. If at least one of them is set to `"true"`, it will activate the entire library. If none of them is set to true, it will deactivate it, meaning any prop above (1-3) will be rendered useless.
+4. The `EXPOSE_VIEW` and `EXPO_PUBLIC_EXPOSE_VIEW` environment variables. If at least one of them is set to `"true"`, it will activate the entire library. If none of them is set to `"true"`, it will deactivate it, meaning any prop above (1-3) will be rendered useless.
 
 ## Future ideas / improvements
 
