@@ -2,7 +2,7 @@ import { LayoutRectangle, useWindowDimensions, View } from "react-native";
 import { whoAmINow } from "who-am-i-now";
 import { ExposedViewProps } from "$/types/ExposedViewProps";
 import { checkStyle } from "$/helpers/checkStyle";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import ExposedViewContext from "$/context/ExposedViewContext";
 import { Dimensions } from "$/components/Dimensions";
 import { Position } from "$/components/Position";
@@ -26,6 +26,7 @@ export const EnhancedView = ({
   const {
     exposeGlobal,
     exposeOverride,
+    addAttributes,
     showWarnings: showWarningsGlobal,
     showDimensions: showDimensionsGlobal,
     showPosition: showPositionGlobal,
@@ -48,27 +49,69 @@ export const EnhancedView = ({
   const showPositionEffective =
     showPosition === undefined ? showPositionGlobal : showPosition;
 
+  const needToMeasureWindow: boolean = useMemo(
+    () =>
+      ((exposeEffective && Boolean(showPositionEffective)) ||
+        Boolean(addAttributes)) &&
+      Boolean(viewRef?.current),
+    [exposeEffective, showPositionEffective, addAttributes, viewRef?.current],
+  );
+
+  const needToMeasureLayout: boolean = useMemo(
+    () =>
+      showDimensionsEffective ||
+      showPositionEffective ||
+      Boolean(addAttributes),
+    [showDimensionsEffective, showPositionEffective, addAttributes],
+  );
+
   useEffect(() => {
-    if (exposeEffective && showPositionEffective && viewRef?.current) {
-      viewRef.current.measureInWindow((x, y, width, height) => {
+    if (needToMeasureWindow) {
+      viewRef.current!.measureInWindow((x, y, width, height) => {
         setMeasureInWindow({ x, y, width, height });
       });
     }
-  }, [
-    exposeEffective,
-    showPositionEffective,
-    windowDimensions?.height,
-    windowDimensions?.width,
-    viewRef?.current,
-    layoutRectangle,
-  ]);
+  }, [needToMeasureWindow, viewRef?.current]);
 
   const showWarningsEffective =
     showWarnings !== undefined ? showWarnings : showWarningsGlobal;
 
+  const attributes = useMemo(
+    () =>
+      addAttributes
+        ? {
+            dataSet: {
+              evWidth: layoutRectangle?.width,
+              evHeight: layoutRectangle?.height,
+              evX: measureInWindow?.x,
+              evY: measureInWindow?.y,
+            },
+          }
+        : {},
+    [
+      addAttributes,
+      layoutRectangle?.width,
+      layoutRectangle?.height,
+      measureInWindow?.x,
+      measureInWindow?.y,
+    ],
+  );
+
   if (!exposeEffective) {
     return (
-      <View style={{ ...style }} {...rest}>
+      <View
+        ref={viewRef}
+        onLayout={
+          needToMeasureLayout
+            ? ({ nativeEvent: { layout } }) => {
+                setLayoutRectangle(layout);
+              }
+            : undefined
+        }
+        style={{ ...style }}
+        {...rest}
+        {...attributes}
+      >
         {children}
       </View>
     );
@@ -85,11 +128,12 @@ export const EnhancedView = ({
         position: "relative",
         ...style,
       }}
+      {...attributes}
     >
       <View
         ref={viewRef}
         onLayout={
-          showDimensionsEffective || showPositionEffective
+          needToMeasureLayout
             ? ({ nativeEvent: { layout } }) => {
                 setLayoutRectangle(layout);
               }

@@ -5,6 +5,7 @@ import { CommonProps } from "$/types/CommonProps";
 type ExposedViewContextProps = React.PropsWithChildren & {
   exposeGlobal: boolean;
   exposeOverride?: boolean;
+  addAttributes?: boolean;
   fontSize?: number;
   borderWidth?: number;
   backgroundOpacity?: number;
@@ -26,6 +27,7 @@ export const ExposedViewContext = createContext<ExposedViewContextProps>(
 export const ExposedViewContextProvider = ({
   children,
   exposeGlobal,
+  addAttributes = true,
   exposeOverride,
   fontSize,
   borderWidth,
@@ -50,6 +52,7 @@ export const ExposedViewContextProvider = ({
     () => ({
       exposeGlobal,
       exposeOverride,
+      addAttributes,
       fontSize,
       borderWidth,
       backgroundOpacity,
@@ -72,6 +75,7 @@ export const ExposedViewContextProvider = ({
     [
       exposeGlobal,
       exposeOverride,
+      addAttributes,
       fontSize,
       borderWidth,
       backgroundOpacity,
